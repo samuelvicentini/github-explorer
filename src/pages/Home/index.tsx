@@ -1,4 +1,5 @@
 import React from 'react';
+import { FiChevronRight } from 'react-icons/fi';
 
 import logoImg from '../../assets/logo.svg';
 
@@ -13,6 +14,23 @@ const Home: React.FC = () => {
         <input placeholder="Digite o nome do repositório" />
         <button type="submit">Pesquisar</button>
       </S.Form>
+      <S.Repositories>
+        <a href="teste">
+          <img
+            src="https://avatars3.githubusercontent.com/u/54546389?s=60&v=4"
+            alt="Samuel Vicentini"
+          />
+          <div>
+            <strong>rocketseat/unform</strong>
+            <p>
+              {' '}
+              Easy peasy highly scalable ReactJS & React Native forms! rocket
+            </p>
+          </div>
+
+          <FiChevronRight />
+        </a>
+      </S.Repositories>
     </>
   );
 };
