@@ -1,35 +1,65 @@
-import React from 'react';
+import React, { useState, FormEvent } from 'react';
 import { FiChevronRight } from 'react-icons/fi';
+import api from '../../services/api';
 
 import logoImg from '../../assets/logo.svg';
 
 import * as S from './styles';
 
+interface Repository {
+  full_name: string;
+  description: string;
+  owner: {
+    login: string;
+    avatar_url: string;
+  };
+}
+
 const Home: React.FC = () => {
+  const [newRepo, setNewRepo] = useState('');
+  const [repositories, setRepositories] = useState<Repository[]>([]);
+
+  async function handleAddRepository(
+    event: FormEvent<HTMLFormElement>,
+  ): Promise<void> {
+    event.preventDefault();
+
+    const response = await api.get<Repository>(`repos/${newRepo}`);
+
+    const repository = response.data;
+
+    setRepositories([...repositories, repository]);
+    setNewRepo('');
+  }
+
   return (
     <>
       <img src={logoImg} alt="logo" />
       <S.Title>Explore repositórios no Github.</S.Title>
-      <S.Form>
-        <input placeholder="Digite o nome do repositório" />
+
+      <S.Form onSubmit={handleAddRepository}>
+        <input
+          value={newRepo}
+          onChange={e => setNewRepo(e.target.value)}
+          placeholder="Digite o nome do repositório"
+        />
         <button type="submit">Pesquisar</button>
       </S.Form>
       <S.Repositories>
-        <a href="teste">
-          <img
-            src="https://avatars3.githubusercontent.com/u/54546389?s=60&v=4"
-            alt="Samuel Vicentini"
-          />
-          <div>
-            <strong>rocketseat/unform</strong>
-            <p>
-              {' '}
-              Easy peasy highly scalable ReactJS & React Native forms! rocket
-            </p>
-          </div>
+        {repositories.map(repository => (
+          <a key={repository.full_name} href="teste">
+            <img
+              src={repository.owner.avatar_url}
+              alt={repository.owner.login}
+            />
+            <div>
+              <strong>{repository.full_name}</strong>
+              <p>{repository.description}</p>
+            </div>
 
-          <FiChevronRight />
-        </a>
+            <FiChevronRight />
+          </a>
+        ))}
       </S.Repositories>
     </>
   );
